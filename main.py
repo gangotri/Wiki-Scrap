@@ -9,27 +9,20 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    print(scraper.getTitle())
-    print(scraper.getList())
-    return {"message": "Hello World"+scraper.getTitle()}
-
-@app.get("/all")
-def all():
-    data = db.all()
-    return {"data": data}
+    
+    return {"message": "Hello World"}
 
 
 
 @app.get("/scrapPage")
-def create(path: str):
-    print("************************")
-    print(path)
+def scapPage(path: str):
     soup = scraper.parseUrl(path)
     pageTitle = scraper.getTitle(soup)
-    data = {"title": pageTitle, "description": scraper.getDescription(soup)}
+    scrapText = scraper.getDescription(soup)
+    data = {"title": pageTitle, "description": scrapText}
     if(db.get_one(pageTitle)):
         data = db.update(pageTitle, data)
     else:
         data = db.create(data)
     
-    return {"inserted": True, "inserted_id": data}
+    return {"message": "Successful", "Scrap text": scrapText}
